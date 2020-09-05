@@ -31,6 +31,9 @@ public class Book {
     @JsonIgnore
     private String isbn;
 
-
+    @ManyToOne
+    @Column(name = "category")
+    @JoinColumn(name = "id")
+    private Category category;
 
 }

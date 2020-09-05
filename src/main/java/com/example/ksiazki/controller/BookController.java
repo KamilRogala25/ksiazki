@@ -1,6 +1,7 @@
 package com.example.ksiazki.controller;
 
 import com.example.ksiazki.model.Book;
+import com.example.ksiazki.model.Category;
 import com.example.ksiazki.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,12 +37,19 @@ public class BookController {
         /books?title=ksiazka&author=Super%Author
      */
 
+
+    @GetMapping("books/{id}")
+    public Book findById(@RequestParam Integer id){
+        return bookRepository.findById(id).get();
+    }
+
     @PostMapping("books")
     public Book createBook(@RequestParam String title,
-                           @RequestParam String author) {
+                           @RequestParam String author, @RequestParam Category category) {
         Book book = new Book();
         book.setTitle(title);
         book.setAuthor(author);
+        book.setCategory(category);
         return bookRepository.save(book);
     }
 
@@ -50,7 +58,7 @@ public class BookController {
     @PutMapping("books/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Integer id,
                                            @RequestParam String title,
-                                           @RequestParam(required = false) String author) {
+                                           @RequestParam(required = false) String author, @RequestParam(required = false) Category category) {
         Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
@@ -59,6 +67,9 @@ public class BookController {
             }
             if (author != null) {
                 book.setAuthor(author);
+            }
+            if (category != null){
+                book.setCategory(category);
             }
             return new ResponseEntity<>(bookRepository.save(book), HttpStatus.OK);
         } else {
