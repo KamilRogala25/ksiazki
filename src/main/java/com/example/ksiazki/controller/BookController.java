@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -38,9 +40,20 @@ public class BookController {
      */
 
 
-    @GetMapping("books/{id}")
-    public Book findById(@RequestParam Integer id){
+    @GetMapping("books/id={id}")
+    public Book findById(@RequestParam Integer id) {
         return bookRepository.findById(id).get();
+    }
+
+    @GetMapping("books?search={search}")
+    public List<Book> findByQuote(@RequestParam String search) {
+        List<Book> results = new ArrayList<>();
+        for (Book book : bookRepository.findAll()) {
+            if (book.getTitle().contains(search) || book.getAuthor().contains(search) && !results.contains(book)){
+                results.add(book);
+            }
+        }
+        return results;
     }
 
     @PostMapping("books")
@@ -55,7 +68,7 @@ public class BookController {
 
     // @PathVariable sprawia, że w ścieżce mamy /books/{id}
 // required false daje opcje niepodawania parametru
-    @PutMapping("books/{id}")
+    @PutMapping("books/id={id}")
     public ResponseEntity<Book> updateBook(@PathVariable Integer id,
                                            @RequestParam String title,
                                            @RequestParam(required = false) String author, @RequestParam(required = false) Category category) {
@@ -68,7 +81,7 @@ public class BookController {
             if (author != null) {
                 book.setAuthor(author);
             }
-            if (category != null){
+            if (category != null) {
                 book.setCategory(category);
             }
             return new ResponseEntity<>(bookRepository.save(book), HttpStatus.OK);
@@ -77,7 +90,7 @@ public class BookController {
         }
     }
 
-    @DeleteMapping("books/{id}")
+    @DeleteMapping("books/id={id}")
     public ResponseEntity<Book> deleteBook(@PathVariable Integer id) {
         Optional<Book> book = bookRepository.findById(id);
         if (book.isPresent()) {
