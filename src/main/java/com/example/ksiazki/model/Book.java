@@ -15,6 +15,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+//nie uzywamy polecen Column i nie nadajemy nazwy, bo nie mamy juz gotowej bazy,
+//wiec SQL moze sobie nadawac nazwy dla kolumn takie jak bedzoe chcial na podstawie kodu
 public class Book {
 
 
@@ -22,7 +24,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name = "title")
+    @JsonProperty("title")
     private String title;
 
     @JsonProperty("author")
@@ -32,8 +34,8 @@ public class Book {
     private String isbn;
 
     @ManyToOne
-    @Column(name = "category")
-    @JoinColumn(name = "id")
+    @JsonProperty("category")
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     private Category category;
 
 }

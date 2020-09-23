@@ -20,13 +20,22 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @Column(name = "category_id", insertable = false, updatable = false)
+    private Integer categoryId;
 
 
-    @Column(name = "name")
+    @Column(name = "category_name")
     private String name;
 
     @OneToMany(mappedBy = "category")
     private List<Book> books = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Category{" +
+                "categoryId=" + categoryId +
+                ", name='" + name + '\'' +
+                ", books=" + books +
+                '}';
+    }
 }
